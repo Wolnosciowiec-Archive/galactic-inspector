@@ -12,10 +12,10 @@ script:
     #- make test
 
     # setup test SSH server for integration tests
-    - PYTHON=python3 make setup_test_docker_host
+    - PYTHON_BIN=python3 make setup_test_docker_host
 
     # build expectation
-    - PYTHON=python3 make dev_build_expectations
+    - PYTHON_BIN=python3 make dev_build_expectations
 
     - make dev_http_run &
     - sleep 10 && killall python
