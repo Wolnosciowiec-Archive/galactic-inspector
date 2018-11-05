@@ -1,5 +1,5 @@
 tornado>=4.5
-paramiko
-yaml
+paramiko==2.4
+PyYAML==3
 PySocks==1.6
-pbr
+pbr==5.1
