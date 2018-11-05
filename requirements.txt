@@ -1,0 +1,5 @@
+tornado>=4.5
+paramiko
+yaml
+PySocks==1.6
+pbr

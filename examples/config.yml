@@ -1,0 +1,21 @@
+test_vagrant_volume:
+    socks_host: ""
+    socks_port: 9150
+    host: "localhost"
+    port: 2422
+    user: root
+    password: "root"
+    auth_method: password
+    public_key: ""
+    passphrase: ""
+    checksum_method: "sha256sum"
+    checksum_files:
+        sh: '/bin/sh'
+        bash: '/bin/bash'
+        losetup: '$(whereis losetup|awk "{print \$2}")'
+    healthchecks:
+        - command: "ps aux |grep nginx"
+          on_failure: "echo 'Something on failure'"
+        - command: "ps aux |grep bash"
+          on_failure: "echo 'This should not show'"
+    on_security_violation: "echo 'Something on security violation'"
