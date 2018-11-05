@@ -12,16 +12,16 @@ script:
     #- make test
 
     # setup test SSH server for integration tests
-    - make setup_test_docker_host
+    - PYTHON=python3 make setup_test_docker_host
 
     # build expectation
-    - make dev_build_expectations
+    - PYTHON=python3 make dev_build_expectations
 
     - make dev_http_run &
     - sleep 10 && killall python
 
     # print version number, if the tagged version is properly detected
-    - python setup.py --version
+    - python3 setup.py --version
 
 deploy:
     skip_cleanup: true
