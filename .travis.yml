@@ -6,12 +6,12 @@ python:
     - pypy3
 sudo: true
 before_script:
-    - make build install_as_package clean
+    - sudo pip install setup-tools
+    - PYTHON_BIN=python3 make build install_as_package clean
+
 script:
     # execute unit tests to check inner logic
     #- make test
-    - pip3 --version
-    - python3 --version
 
     # setup test SSH server for integration tests
     - PYTHON_BIN=python3 make setup_test_docker_host
