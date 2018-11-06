@@ -6,8 +6,7 @@ python:
     - pypy3
 sudo: true
 before_script:
-    - sudo pip install setup-tools
-    - PYTHON_BIN=python3 make build install_as_package clean
+    - PYTHON_BIN=python3 make install_dependencies build install_as_package clean
 
 script:
     # execute unit tests to check inner logic

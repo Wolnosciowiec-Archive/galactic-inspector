@@ -2,6 +2,7 @@
 
 PYTHON_BIN=python3
 SUDO=sudo
+PIP_BIN=pip
 
 # Colors
 COLOR_RESET   = \033[0m
@@ -23,6 +24,9 @@ help:
 	} \
 	{ lastLine = $$0 }' $(MAKEFILE_LIST)
 
+## Instal python dependencies
+install_dependencies:
+	${SUDO} ${PIP_BIN} install -r $$(pwd)/requirements.txt
 
 ## Build python package
 build:
