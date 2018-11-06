@@ -6,18 +6,18 @@ python:
     - pypy3
 sudo: true
 before_script:
-    - PYTHON_BIN=python3 PIP_BIN=pip SUDO= make install_dependencies
-    - PYTHON_BIN=python3 PIP_BIN=pip make build install_as_package clean
+    - make install_dependencies PYTHON_BIN=python3 PIP_BIN=pip SUDO=""
+    - make build install_as_package clean PYTHON_BIN=python3 PIP_BIN=pip
 
 script:
     # execute unit tests to check inner logic
     #- make test
 
     # setup test SSH server for integration tests
-    - PYTHON_BIN=python3 make setup_test_docker_host
+    - make setup_test_docker_host PYTHON_BIN=python3
 
     # build expectation
-    - PYTHON_BIN=python3 make dev_build_expectations
+    - make dev_build_expectations PYTHON_BIN=python3
 
     - make dev_http_run &
     - sleep 10 && killall python
