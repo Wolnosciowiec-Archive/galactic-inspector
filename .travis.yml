@@ -15,6 +15,7 @@ script:
 
     # setup test SSH server for integration tests
     - make setup_test_docker_host PYTHON_BIN=python3
+    - mkdir -p ~/.ssh && ssh-keyscan localhost:2422 >> ~/.ssh/known_hosts
 
     # build expectation
     - make dev_build_expectations PYTHON_BIN=python3 SUDO=""
