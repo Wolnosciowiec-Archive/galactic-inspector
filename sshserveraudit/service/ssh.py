@@ -134,11 +134,12 @@ class SSH:
 
         self._client = paramiko.SSHClient()
         self._client.get_transport()
-        self._client.load_system_host_keys()
 
         # this is strongly insecure, but should be allowed for TEST environments
         if not self._connection_specification['verify_ssh_fingerprint']:
             self._client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+        self._client.load_system_host_keys()
 
         self._client.connect(
             self._connection_specification['host'],
