@@ -7,7 +7,7 @@ python:
 sudo: true
 before_script:
     - make install_dependencies PYTHON_BIN=python3 PIP_BIN=pip SUDO=""
-    - make build install_as_package clean PYTHON_BIN=python3 PIP_BIN=pip
+    - make build install_as_package clean PYTHON_BIN=python3 PIP_BIN=pip SUDO=""
 
 script:
     # execute unit tests to check inner logic
@@ -17,7 +17,7 @@ script:
     - make setup_test_docker_host PYTHON_BIN=python3
 
     # build expectation
-    - make dev_build_expectations PYTHON_BIN=python3
+    - make dev_build_expectations PYTHON_BIN=python3 SUDO=""
 
     - make dev_http_run &
     - sleep 10 && killall python
