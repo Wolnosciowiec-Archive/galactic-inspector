@@ -6,7 +6,8 @@ python:
     - pypy3
 sudo: true
 before_script:
-    - sudo pip3 install -r ./requirements.txt
+    - pip install -r ./requirements.txt
+    - sudo pip install -r ./requirements.txt
     - PYTHON_BIN=python3 PIP_BIN=pip3 make build install_as_package clean
 
 script:
