@@ -21,7 +21,7 @@ script:
     - make dev_build_expectations PYTHON_BIN=python3 SUDO=""
 
     - make dev_http_run &
-    - sleep 10 && killall python
+    - (sleep 10 && killall python) || true
 
     # print version number, if the tagged version is properly detected
     - python3 setup.py --version
