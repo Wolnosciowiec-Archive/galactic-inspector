@@ -62,7 +62,7 @@ class Node:
 
         for check in config['healthchecks']:
             self._healthchecks.append(
-                Healthcheck(check['command'], check['on_failure'])
+                Healthcheck(check['command'], check['on_failure'], check['on_failure_even_if_security_violation'])
             )
 
     def get_address(self) -> str:
