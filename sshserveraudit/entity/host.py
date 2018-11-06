@@ -32,6 +32,10 @@ class Node:
         'public_key': str,
         'passphrase': str,
 
+        'ssh_auth_timeout': int,
+        'ssh_banner_timeout': int,
+        'ssh_tcp_timeout': int,
+
         # command name or path, example: md5sum, sha256sum
         'checksum_method': str,
         'checksum_files': dict,

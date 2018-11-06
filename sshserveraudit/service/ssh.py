@@ -25,7 +25,10 @@ class SSH:
                  password: str,
                  socks_host: str,
                  socks_port: str,
-                 verify_ssh_fingerprint: bool):
+                 verify_ssh_fingerprint: bool,
+                 tcp_timeout: int,
+                 banner_timeout: int,
+                 auth_timeout: int):
 
         self._connection_specification = {
             'host': host,
@@ -36,7 +39,10 @@ class SSH:
             'password': password,
             'socks_host': socks_host,
             'socks_port': socks_port,
-            'verify_ssh_fingerprint': verify_ssh_fingerprint
+            'verify_ssh_fingerprint': verify_ssh_fingerprint,
+            'tcp_timeout': tcp_timeout,
+            'banner_timeout': banner_timeout,
+            'auth_timeout': auth_timeout
         }
 
     @staticmethod
@@ -144,7 +150,9 @@ class SSH:
         self._client.connect(
             self._connection_specification['host'],
             port=self._connection_specification['port'],
-            auth_timeout=120,
+            timeout=self._connection_specification['tcp_timeout'],
+            auth_timeout=self._connection_specification['auth_timeout'],
+            banner_timeout=self._connection_specification['banner_timeout'],
             key_filename=self._connection_specification['key_filename'] if self._connection_specification['key_filename'] else None,
             passphrase=self._connection_specification['passphrase'] if self._connection_specification['passphrase'] else None,
             username=self._connection_specification['username'],

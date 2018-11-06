@@ -14,7 +14,7 @@ from .exception import AppException
 from .entity.host import Node
 
 define('config',
-       default=os.path.expanduser('/usr/local/etc/secure-crypt-mounter/config.yml'),
+       default=os.path.expanduser('/usr/local/etc/ssh-server-audit/config.yml'),
        help='Path to configuration file',
        type=str)
 
@@ -34,7 +34,7 @@ define('listen',
        type=str)
 
 define('expectations-directory',
-       default=os.path.expanduser('/usr/local/var/secure-crypt-mounter/expectations'),
+       default=os.path.expanduser('/usr/local/var/ssh-server-audit/expectations'),
        help='Path to store expectations',
        type=str)
 
@@ -102,7 +102,7 @@ class SecureCryptMountApplication(tornado.web.Application):
             )
 
         handle = open(path, 'rb')
-        content = json.loads(handle.read())
+        content = json.loads(handle.read().decode('utf-8'))
         handle.close()
 
         return content
@@ -145,7 +145,7 @@ class SecureCryptMountApplication(tornado.web.Application):
 
 def create_application():
     expectations_dirs = [
-        os.path.expanduser('~/.secryptmount/expectations'),
+        os.path.expanduser('~/.ssh-server-audit/expectations'),
         options.expectations_directory
     ]
 
@@ -172,6 +172,11 @@ def create_application():
 
 
 def run_application():
+    tornado.log.app_log.info('=== SSH Server Audit ============================================================')
+    tornado.log.app_log.info('= A tool to protect your server against cross-account attacks on shared hosting =')
+    tornado.log.app_log.info('= and to protect against the government interference, political censorship      =')
+    tornado.log.app_log.info('=================================================================================')
+
     try:
         app = create_application()
 
@@ -180,11 +185,6 @@ def run_application():
         sys.exit(1)
 
     app.listen(options.port, options.listen)
-
-    tornado.log.app_log.info('=== SSH Server Audit ============================================================')
-    tornado.log.app_log.info('= A tool to protect your server against cross-account attacks on shared hosting =')
-    tornado.log.app_log.info('= and to protect against the government interference, political censorship      =')
-    tornado.log.app_log.info('=================================================================================')
     tornado.ioloop.IOLoop.current().start()
 
 

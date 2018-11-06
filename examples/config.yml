@@ -8,12 +8,14 @@ test_vagrant_volume:
     host: "localhost"
     port: 2422
     user: root
-
-    # use "false" only for testing, never use "false" on production
-    # as it could expose you to a MITM attack
-    verify_ssh_fingerprint: true
     password: "root"
     auth_method: password
+
+    # SSH options
+    ssh_tcp_timeout: 300
+    ssh_banner_timeout: 120
+    ssh_auth_timeout: 300
+    verify_ssh_fingerprint: true # use "false" ONLY for testing, never use "false" on production
 
     # public key, and your passphrase to the public key
     public_key: ""

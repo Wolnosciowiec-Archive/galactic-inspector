@@ -17,5 +17,8 @@ class NodeFactory:
             password=attributes['password'],
             socks_host=attributes['socks_host'],
             socks_port=attributes['socks_port'],
-            verify_ssh_fingerprint=attributes['verify_ssh_fingerprint']
+            verify_ssh_fingerprint=attributes['verify_ssh_fingerprint'],
+            banner_timeout=attributes['ssh_banner_timeout'],
+            auth_timeout=attributes['ssh_auth_timeout'],
+            tcp_timeout=attributes['ssh_tcp_timeout']
         ))
