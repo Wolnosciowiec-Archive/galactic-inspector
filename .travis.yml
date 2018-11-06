@@ -6,9 +6,8 @@ python:
     - pypy3
 sudo: true
 before_script:
-    - pip install -r ./requirements.txt
-    - sudo pip install -r ./requirements.txt
-    - PYTHON_BIN=python3 PIP_BIN=pip3 make build install_as_package clean
+    - PYTHON_BIN=python3 PIP_BIN=pip SUDO= make install_dependencies
+    - PYTHON_BIN=python3 PIP_BIN=pip make build install_as_package clean
 
 script:
     # execute unit tests to check inner logic
