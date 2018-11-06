@@ -6,14 +6,18 @@ class Healthcheck:
     _command = ''
     _on_failure = ''
 
-    def __init__(self, command: str, on_failure: str):
+    def __init__(self, command: str, on_failure: str, exec_repair_on_sec_violation: bool):
         self._command = command
         self._on_failure = on_failure
+        self._exec_repair_on_sec_violation = exec_repair_on_sec_violation
 
     def get_command(self):
         return self._command
 
-    def get_on_failure(self):
+    def get_on_failure(self, security_violation_active: bool):
+        if security_violation_active and not self._exec_repair_on_sec_violation:
+            return ''
+
         return self._on_failure
 
 
@@ -22,6 +26,7 @@ class Node:
         'host': str,
         'port': int,
         'user': str,
+        'verify_ssh_fingerprint': bool,
         'password': str,
         'auth_method': str,
         'public_key': str,
@@ -46,6 +51,9 @@ class Node:
     _expectations = {}
     _healthchecks = []
     _ssh = None         # type: SSH
+
+    # state
+    _active_security_violation = False
 
     def __init__(self, config: dict, expectations: dict, ssh: SSH):
         self._config = config
@@ -101,6 +109,15 @@ class Node:
 
     def get_ssh(self):
         return self._ssh
+
+    def is_verify_ssh_fingerprint(self):
+        return self._config['verify_ssh_fingerprint']
+
+    def has_active_security_violation(self) -> bool:
+        return self._active_security_violation
+
+    def set_active_security_violation_marking(self, is_active: bool):
+        self._active_security_violation = is_active
 
     def __repr__(self):
         return 'Node <' + self.get_user() + '@' + self.get_address() + ':' + str(self.get_port()) + '>'

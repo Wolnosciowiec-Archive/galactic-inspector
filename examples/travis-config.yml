@@ -11,7 +11,7 @@ test_vagrant_volume:
 
     # use "false" only for testing, never use "false" on production
     # as it could expose you to a MITM attack
-    verify_ssh_fingerprint: true
+    verify_ssh_fingerprint: false
     password: "root"
     auth_method: password
 

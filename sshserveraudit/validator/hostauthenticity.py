@@ -8,16 +8,18 @@ from . import Validator
 class HostAuthenticityValidator(Validator):
     @staticmethod
     def is_valid(node: Node) -> ValidatorResult:
-        code = True
+        status = True
         reason = ''
         results = HostAuthenticityValidator.validate(node)
 
         for name, generated_hash in results.items():
             if node.get_expected_checksum(name) != generated_hash:
-                code = False
+                status = False
                 reason = 'Expectation failed for "' + name + '"'
 
-        return ValidatorResult(code, reason, [])
+        node.set_active_security_violation_marking(status)
+
+        return ValidatorResult(status, reason, [])
 
     @staticmethod
     def build_expectations(volume: Node) -> dict:

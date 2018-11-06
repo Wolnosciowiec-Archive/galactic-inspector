@@ -22,9 +22,10 @@ class HealthValidator(Validator):
 
             if exit_code > 0:
                 at_least_one_failed = True
+                rescue_command = check.get_on_failure(node.has_active_security_violation())
 
-                if check.get_on_failure():
-                    rescue_commands.append(check.get_on_failure())
+                if rescue_command:
+                    rescue_commands.append(rescue_command)
 
                 reason += check.get_command() + " returned a non-zero status code\n"
 

@@ -42,11 +42,11 @@ clean:
 
 ## Run the HTTP server
 dev_http_run:
-	ssh-server-audit --config=$$(pwd)/examples/config.yml
+	ssh-server-audit --config=$$(pwd)/examples/travis-config.yml
 
 ## Build expectations for test volume
 dev_build_expectations:
-	ssh-server-audit --config=$$(pwd)/examples/config.yml --build-expectations=test_vagrant_volume
+	ssh-server-audit --config=$$(pwd)/examples/travis-config.yml --build-expectations=test_vagrant_volume
 
 ## Set up a test SSH server containerized
 setup_test_docker_host:

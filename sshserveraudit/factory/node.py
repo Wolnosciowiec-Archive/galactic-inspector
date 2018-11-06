@@ -16,5 +16,6 @@ class NodeFactory:
             username=attributes['user'],
             password=attributes['password'],
             socks_host=attributes['socks_host'],
-            socks_port=attributes['socks_port']
+            socks_port=attributes['socks_port'],
+            verify_ssh_fingerprint=attributes['verify_ssh_fingerprint']
         ))
