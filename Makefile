@@ -28,6 +28,10 @@ help:
 install_dependencies:
 	${SUDO} ${PIP_BIN} install -r $$(pwd)/requirements.txt
 
+## Run unit tests
+test:
+	true
+
 ## Build python package
 build:
 	${PYTHON_BIN} setup.py build
@@ -51,3 +55,11 @@ dev_build_expectations:
 ## Set up a test SSH server containerized
 setup_test_docker_host:
 	${SUDO} docker run -d --rm --publish=2422:22 wolnosciowiec/docker-alpine-sshd:7.5 -o LogLevel=DEBUG
+
+## Build a docker container
+build_docker_container:
+	${SUDO} docker build . -t wolnosciowiec/ssh-server-audit
+
+## Run the docker container
+run_docker_container:
+	${SUDO} docker run wolnosciowiec/ssh-server-audit
