@@ -85,6 +85,9 @@ class SecureCryptMountApplication(tornado.web.Application):
         config = self._load_config_file_into_array(config_path)
 
         for node_name, attributes in config.items():
+            if is_build_mode:
+                attributes['verify_ssh_fingerprint'] = False
+
             self._validate_node(node_name, attributes)
             self.configured_nodes[node_name] = NodeFactory.create(
                 attributes,
