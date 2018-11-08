@@ -11,7 +11,7 @@ class HealthCheckLoopController(AbstractLoopController):
         """ Monitor and react on failure """
 
         tornado.log.app_log.info('[' + str(node) + '][Healthcheck] Performing a check')
-        result = HealthValidator.is_valid(node)
+        result = HealthValidator().is_valid(node=node, force=True)
 
         if not result.is_ok():
             tornado.log.app_log.error('!!! [' + str(node) + '][Healthcheck] At least one of health checks failed')

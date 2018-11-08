@@ -6,8 +6,7 @@ from . import Validator
 
 
 class HostAuthenticityValidator(Validator):
-    @staticmethod
-    def is_valid(node: Node) -> ValidatorResult:
+    def _is_valid(self, node: Node) -> ValidatorResult:
         status = True
         reason = ''
         results = HostAuthenticityValidator.validate(node)

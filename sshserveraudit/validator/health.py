@@ -7,8 +7,7 @@ from . import Validator
 
 class HealthValidator(Validator):
 
-    @staticmethod
-    def is_valid(node: Node) -> ValidatorResult:
+    def _is_valid(self, node: Node) -> ValidatorResult:
 
         at_least_one_failed = False
         reason = ''

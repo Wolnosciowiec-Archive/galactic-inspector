@@ -18,9 +18,9 @@ script:
     - mkdir -p ~/.ssh && ssh-keyscan -p 2422 localhost >> ~/.ssh/known_hosts
 
     # build expectation
-    - make dev_build_expectations PYTHON_BIN=python3 SUDO="" || true
+    - make dev_build_expectations PYTHON_BIN=python3 SUDO=""
 
-    - make dev_http_run || true &
+    - make dev_http_run &
     - (sleep 10 && killall python) || true
 
     # print version number, if the tagged version is properly detected

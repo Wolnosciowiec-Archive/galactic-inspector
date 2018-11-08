@@ -17,14 +17,14 @@ class ValidationHttpController(web.RequestHandler):
         volume_report = {}
         has_at_least_one_failure = False
 
-        for volume_name, volume in self.application.configured_nodes.items():
-            volume_report[volume_name] = {}
+        for node_name, node in self.application.configured_nodes.items():
+            volume_report[node_name] = {}
 
-            for validator_name, l_validator in self._get_validators().items():
-                validator = l_validator  # type: Validator
+            for validator_name, validator_module in self._get_validators().items():
+                validator = validator_module()  # type: Validator
 
-                result = validator.is_valid(volume)
-                volume_report[volume_name][validator_name] = result.to_dict()
+                result = validator.is_valid(node, force=False)
+                volume_report[node_name][validator_name] = result.to_dict()
 
                 if not result.is_ok():
                     has_at_least_one_failure = True

@@ -11,7 +11,7 @@ class AuthenticityCheckLoopController(AbstractLoopController):
         """ Monitor and react on failure """
 
         tornado.log.app_log.info('[' + str(node) + '][Authenticity] Performing an authenticity check')
-        result = HostAuthenticityValidator.is_valid(node)
+        result = HostAuthenticityValidator().is_valid(node=node, force=True)
 
         if not result.is_ok():
             tornado.log.app_log.error('!!! [' + str(node) + '][Authenticity] Security violation found on node')

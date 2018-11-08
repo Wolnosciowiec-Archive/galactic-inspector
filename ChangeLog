@@ -1,6 +1,11 @@
 CHANGES
 =======
 
+* Disabled SSH fingerprint check when in build mode (build expectations)
+* Working docker build on Alpine 3.8
+* Prepared Dockerfile for unit tests integration
+* Added Dockerfile
+* Added more configurable timeouts
 * Travis debug
 * Fix
 * Fix
