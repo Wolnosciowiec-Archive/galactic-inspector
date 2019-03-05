@@ -15,6 +15,7 @@ class HealthCheckLoopController(AbstractLoopController):
 
         if not result.is_ok():
             tornado.log.app_log.error('!!! [' + str(node) + '][Healthcheck] At least one of health checks failed')
+            tornado.log.app_log.info(result.get_rescue_commands())
 
             for command in result.get_rescue_commands():
                 try:
