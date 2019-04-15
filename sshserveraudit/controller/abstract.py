@@ -9,5 +9,5 @@ class AbstractLoopController:
         self.configured_nodes = configured_volumes
 
     @staticmethod
-    def perform_check(node: Node):
+    def perform_check(node: Node) -> bool:
         pass

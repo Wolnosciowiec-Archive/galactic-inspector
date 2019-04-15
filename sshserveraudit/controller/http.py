@@ -14,17 +14,17 @@ class ValidationHttpController(web.RequestHandler):
     def get(self):
         """ Runs each validator on each node """
 
-        volume_report = {}
+        node_report = {}
         has_at_least_one_failure = False
 
         for node_name, node in self.application.configured_nodes.items():
-            volume_report[node_name] = {}
+            node_report[node_name] = {}
 
-            for validator_name, validator_module in self._get_validators().items():
-                validator = validator_module()  # type: Validator
+            for validator_name, validator_module in self.application.get_validators().items():
+                validator = validator_module  # type: Validator
 
                 result = validator.is_valid(node, force=False)
-                volume_report[node_name][validator_name] = result.to_dict()
+                node_report[node_name][validator_name] = result.to_dict()
 
                 if not result.is_ok():
                     has_at_least_one_failure = True
@@ -32,12 +32,5 @@ class ValidationHttpController(web.RequestHandler):
         if has_at_least_one_failure:
             self.set_status(503, 'At least one failure')
 
-        self.write(json.dumps(volume_report, sort_keys=True, indent=4))
-
-    @staticmethod
-    def _get_validators() -> dict:
-        return {
-            'authenticity': HostAuthenticityValidator,
-            'volume':       HealthValidator
-        }
+        self.write(json.dumps(node_report, sort_keys=True, indent=4))
 

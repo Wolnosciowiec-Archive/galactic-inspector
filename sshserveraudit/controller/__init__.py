@@ -16,12 +16,12 @@ class ShellController:
     sleep_time = 30                 # type: int
     controllers = []                # type:
 
-    def __init__(self, nodes: dict, sleep_time: int):
+    def __init__(self, nodes: dict, sleep_time: int, validators: dict):
         self.nodes = nodes
         self.sleep_time = sleep_time
         self.controllers = [
-            AuthenticityCheckLoopController,
-            HealthCheckLoopController
+            AuthenticityCheckLoopController({}, validators['HostAuthenticity']),
+            HealthCheckLoopController({}, validators['Health'])
         ]
 
     def start(self):

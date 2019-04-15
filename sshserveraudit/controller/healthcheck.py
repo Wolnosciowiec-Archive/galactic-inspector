@@ -6,12 +6,18 @@ import tornado.log
 
 
 class HealthCheckLoopController(AbstractLoopController):
-    @staticmethod
-    def perform_check(node: Node):
+
+    validator = None  # type: HealthValidator
+
+    def __init__(self, configured_volumes: dict, validator: HealthValidator):
+        super().__init__(configured_volumes)
+        self.validator = validator
+
+    def perform_check(self, node: Node) -> bool:
         """ Monitor and react on failure """
 
         tornado.log.app_log.info('[' + str(node) + '][Healthcheck] Performing a check')
-        result = HealthValidator().is_valid(node=node, force=True)
+        result = self.validator.is_valid(node=node, force=True)
 
         if not result.is_ok():
             tornado.log.app_log.error('!!! [' + str(node) + '][Healthcheck] At least one of health checks failed')
@@ -25,6 +31,7 @@ class HealthCheckLoopController(AbstractLoopController):
                     tornado.log.app_log.error('!!! [' + str(node) + '][Healthcheck] Cannot execute rescue command "' + command + '"')
                     tornado.log.app_log.error(str(e))
 
-            return
+            return False
 
         tornado.log.app_log.info('[' + str(node) + '][Healthcheck] Looks OK')
+        return True
