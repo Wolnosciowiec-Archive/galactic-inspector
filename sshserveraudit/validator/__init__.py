@@ -41,8 +41,11 @@ class Validator:
 
         return cached['result']
 
-    def is_valid(self, node: Node, force=False) -> ValidatorResult:
+    def is_valid(self, node: Node, force=False, only_cache=False) -> ValidatorResult:
         results = self._get_results_from_cache(node)
+
+        if only_cache and not results:
+            return ValidatorResult(False, 'Status not ready, waiting for check to be performed...', [])
 
         if results and not force:
             return results
