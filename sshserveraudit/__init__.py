@@ -12,6 +12,8 @@ from .validator.hostauthenticity import HostAuthenticityValidator
 from .factory.node import NodeFactory
 from .exception import AppException
 from .entity.host import Node
+from .validator.health import HealthValidator
+from .validator.hostauthenticity import HostAuthenticityValidator
 
 define('config',
        default=os.path.expanduser('/usr/local/etc/ssh-server-audit/config.yml'),
@@ -48,6 +50,16 @@ parse_command_line()
 
 class SecureCryptMountApplication(tornado.web.Application):
     configured_nodes = {}   # type: {Node}
+    _validators = []
+
+    def __init__(self, handlers=None, default_host=None, transforms=None,
+                 **settings):
+        super().__init__(handlers=handlers, default_host=default_host, transforms=transforms, settings=settings)
+
+        self._validators = {
+            "HostAuthenticity": HostAuthenticityValidator(),
+            "Health": HealthValidator()
+        }
 
     def build_expectations(self, expectation_dirs: list, node_name: str) -> bool:
         if node_name not in self.configured_nodes:
@@ -93,6 +105,9 @@ class SecureCryptMountApplication(tornado.web.Application):
                 attributes,
                 self._load_expectations(expectation_dirs, node_name) if not is_build_mode else {}
             )
+
+    def get_validators(self):
+        return self._validators
 
     @staticmethod
     def _load_expectations(lookup_dirs: list, node_name: str) -> dict:
@@ -168,7 +183,11 @@ def create_application():
         sys.exit(0 if status else 1)
 
     # SHELL application
-    shell_app = ShellController(nodes=app.configured_nodes, sleep_time=options.sleep_time)
+    shell_app = ShellController(
+        nodes=app.configured_nodes,
+        sleep_time=options.sleep_time,
+        validators=app.get_validators()
+    )
     shell_app.start()
 
     return app

@@ -11,7 +11,7 @@ before_script:
 
 script:
     # execute unit tests to check inner logic
-    #- make test
+    - make test
 
     # setup test SSH server for integration tests
     - make setup_test_docker_host PYTHON_BIN=python3

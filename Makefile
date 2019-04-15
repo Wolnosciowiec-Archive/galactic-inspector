@@ -30,7 +30,7 @@ install_dependencies:
 
 ## Run unit tests
 test:
-	true
+	${PYTHON_BIN} -m unittest discover -s ./tests
 
 ## Build python package
 build:
