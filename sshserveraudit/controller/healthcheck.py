@@ -40,7 +40,10 @@ class HealthCheckLoopController(AbstractLoopController):
 
                     node.get_notifier().tried_to_recover_after_health_check(command, str(e))
 
+            node.set_healthy(False)
             return False
 
         tornado.log.app_log.info('[' + str(node) + '][Healthcheck] Looks OK')
+        node.set_healthy(True)
+
         return True

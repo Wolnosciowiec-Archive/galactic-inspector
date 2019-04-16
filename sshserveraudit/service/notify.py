@@ -28,6 +28,9 @@ class Notifier:
     def ssh_connection_error(self, details: str):
         pass
 
+    def is_healthy_again(self):
+        pass
+
     def authenticity_executed_prevention_command(self, details: str):
         pass
 
@@ -85,6 +88,9 @@ class SlackNotifier(Notifier):
 
     def ssh_connection_error(self, details: str):
         self._send(":warning: SSH connection error: `" + str(details) + "`")
+
+    def is_healthy_again(self):
+        self._send(":white_check_mark: All health checks are now passing on `" + str(self.node) + "`")
 
     def _send(self, msg: str):
         if not self._should_send_notification(msg):

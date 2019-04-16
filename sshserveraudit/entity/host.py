@@ -61,6 +61,7 @@ class Node:
     _config = {}
     _expectations = {}
     _healthchecks = []
+    _healthy = True
     _ssh = None         # type: SSH
     _notifier = None    # type: Notifier
 
@@ -140,6 +141,16 @@ class Node:
 
     def set_active_security_violation_marking(self, is_active: bool):
         self._active_security_violation = is_active
+
+    def set_healthy(self, healthy: bool):
+
+        if not self._healthy and healthy:
+            self.get_notifier().is_healthy_again()
+
+        self._healthy = healthy
+
+    def is_healthy(self) -> bool:
+        return self._healthy
 
     def __repr__(self):
         return 'Node <' + self.get_user() + '@' + self.get_address() + ':' + str(self.get_port()) + '>'

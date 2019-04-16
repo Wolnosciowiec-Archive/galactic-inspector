@@ -1,6 +1,7 @@
 CHANGES
 =======
 
+* - Fixed recovery commands execution - Added detailed slack/mattermost notifications
 * Refactored HTTP caching: The HTTP endpoint now does not trigger rebuild, for security reasons
 * Refactored HTTP caching
 * Initial test coverage
