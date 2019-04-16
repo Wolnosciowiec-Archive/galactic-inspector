@@ -16,7 +16,10 @@ class HostAuthenticityValidator(Validator):
                 status = False
                 reason = 'Expectation failed for "' + name + '"'
 
-        node.set_active_security_violation_marking(status)
+        if not status:
+            node.get_notifier().authenticity_check_failed(results)
+
+        node.set_active_security_violation_marking(not status)
 
         return ValidatorResult(status, reason, [])
 

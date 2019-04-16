@@ -21,6 +21,19 @@ test_vagrant_volume:
     public_key: ""
     passphrase: ""
 
+    # mattermost/slack
+    notifications:
+        type: "none"
+        url: "http://some-url-here"
+        resend_after: 300
+
+    #
+    # notifications:
+    #     type: "mattermost"
+    #     url: "http://some-url-here"
+    #     resend_after: 300
+    #
+
     checksum_method: "sha256sum"
     on_security_violation: "echo 'Checksum failed... unmounting secure data disk, waiting for administrator intervention...'"
 

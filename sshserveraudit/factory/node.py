@@ -2,13 +2,15 @@
 
 from ..entity.host import Node
 from ..service.ssh import SSH
+from .notifier import NotifierFactory
 
 
 class NodeFactory:
 
     @staticmethod
     def create(attributes: dict, expectations: dict) -> Node:
-        return Node(attributes, expectations, SSH(
+
+        ssh = SSH(
             host=attributes['host'],
             port=attributes['port'],
             key_filename=attributes['public_key'],
@@ -21,4 +23,9 @@ class NodeFactory:
             banner_timeout=attributes['ssh_banner_timeout'],
             auth_timeout=attributes['ssh_auth_timeout'],
             tcp_timeout=attributes['ssh_tcp_timeout']
-        ))
+        )
+
+        node = Node(attributes, expectations, ssh)
+        node.set_notifier(NotifierFactory.create(attributes['notifications'], node))
+
+        return node

@@ -1,6 +1,7 @@
 CHANGES
 =======
 
+* Refactored HTTP caching: The HTTP endpoint now does not trigger rebuild, for security reasons
 * Refactored HTTP caching
 * Initial test coverage
 * Added more verbosity to healthchecks

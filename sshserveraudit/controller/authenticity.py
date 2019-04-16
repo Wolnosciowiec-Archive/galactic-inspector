@@ -24,7 +24,11 @@ class AuthenticityCheckLoopController(AbstractLoopController):
 
             if node.get_what_to_do_on_security_violation():
                 tornado.log.app_log.error('!!! [' + str(node) + '][Authenticity] Executing prevention command')
-                node.get_ssh().execute_command(node.get_what_to_do_on_security_violation())
+                node.execute_command(node.get_what_to_do_on_security_violation())
+                node.get_notifier().authenticity_executed_prevention_command(
+                    str(node.get_what_to_do_on_security_violation())
+                )
+
             return False
 
         tornado.log.app_log.info('[' + str(node) + '][Authenticity] Looks OK')

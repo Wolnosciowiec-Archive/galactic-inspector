@@ -119,7 +119,7 @@ class SSH:
             return self._execute_command(force=retry_num > 1, command=command)
 
     def _execute_command(self, command: str, force: bool) -> tuple:
-        return self._get_client(force=force).exec_command(command, timeout=30)
+        return self._get_client(force=force).exec_command(command, timeout=30, get_pty=True)
 
     def _create_client(self):
         # do not create parallel clients, let one thread wait for another

@@ -15,11 +15,13 @@ class HealthValidator(Validator):
 
         for check in node.get_health_checks():
             check = check  # type: Healthcheck
-            stdin, stdout, stderr = node.get_ssh().execute_command(check.get_command() + ' > /dev/null 2>&1; echo $?')
+            stdin, stdout, stderr = node.execute_command(check.get_command() + ' > /dev/null 2>&1; echo $?')
 
             exit_code = int(stdout.read().decode('utf-8'))
 
             if exit_code > 0:
+                node.get_notifier().health_check_failed(str(check))
+
                 at_least_one_failed = True
                 rescue_command = check.get_on_failure(node.has_active_security_violation())
 

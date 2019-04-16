@@ -1,5 +1,7 @@
 
+from paramiko.ssh_exception import SSHException, BadHostKeyException
 from ..service.ssh import SSH
+from ..service.notify import Notifier
 
 
 class Healthcheck:
@@ -13,6 +15,9 @@ class Healthcheck:
 
     def get_command(self):
         return self._command
+
+    def __repr__(self):
+        return self.get_command()
 
     def get_on_failure(self, security_violation_active: bool):
         if security_violation_active and not self._exec_repair_on_sec_violation:
@@ -40,6 +45,8 @@ class Node:
         'checksum_method': str,
         'checksum_files': dict,
 
+        'notifications': dict,
+
         # use socks proxy to connect to SSH with
         # (allows to hide this service behind TOR network)
         'socks_host': str,
@@ -55,6 +62,7 @@ class Node:
     _expectations = {}
     _healthchecks = []
     _ssh = None         # type: SSH
+    _notifier = None    # type: Notifier
 
     # state
     _active_security_violation = False
@@ -66,7 +74,8 @@ class Node:
 
         for check in config['healthchecks']:
             self._healthchecks.append(
-                Healthcheck(check['command'], check['on_failure'], check['on_failure_even_if_security_violation'])
+                Healthcheck(check['command'], check.get('on_failure', None),
+                            check.get('on_failure_even_if_security_violation', False))
             )
 
     def get_address(self) -> str:
@@ -111,8 +120,17 @@ class Node:
     def get_checksum_files(self) -> dict:
         return self._config['checksum_files']
 
-    def get_ssh(self):
+    def get_ssh(self) -> SSH:
         return self._ssh
+
+    def get_notifier(self) -> Notifier:
+        return self._notifier
+
+    def set_notifier(self, notifier: Notifier):
+        if self._notifier:
+            raise Exception('Cannot overwrite notifier')
+
+        self._notifier = notifier
 
     def is_verify_ssh_fingerprint(self):
         return self._config['verify_ssh_fingerprint']
@@ -125,3 +143,15 @@ class Node:
 
     def __repr__(self):
         return 'Node <' + self.get_user() + '@' + self.get_address() + ':' + str(self.get_port()) + '>'
+
+    def execute_command(self, *args, **kwargs):
+        try:
+            return self.get_ssh().execute_command(*args, **kwargs)
+
+        except BadHostKeyException as e:
+            self.get_notifier().ssh_identity_possibly_changed()
+            raise e
+
+        except Exception as e:
+            self.get_notifier().ssh_connection_error(str(e))
+            raise e

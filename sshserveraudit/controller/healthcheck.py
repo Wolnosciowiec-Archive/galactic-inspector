@@ -24,12 +24,21 @@ class HealthCheckLoopController(AbstractLoopController):
             tornado.log.app_log.info(result.get_rescue_commands())
 
             for command in result.get_rescue_commands():
+                tornado.log.app_log.error('!!! [' + str(node) + '][Healthcheck] Attempting to execute ' +
+                                          ' rescue command "' + str(command) + "")
+
                 try:
-                    node.get_ssh().execute_command(command)
+                    stdin, stdout, stderr = node.execute_command(command + ' > /dev/null 2>&1; echo $?')
+                    exit_code = int(stdout.read().decode('utf-8'))
+
+                    if exit_code > 0:
+                        raise Exception('Rescue command failed, exit code is ' + str(exit_code))
 
                 except Exception as e:
                     tornado.log.app_log.error('!!! [' + str(node) + '][Healthcheck] Cannot execute rescue command "' + command + '"')
                     tornado.log.app_log.error(str(e))
+
+                    node.get_notifier().tried_to_recover_after_health_check(command, str(e))
 
             return False
 
