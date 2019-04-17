@@ -1,7 +1,5 @@
 from tornado import web
 
-from ..validator.hostauthenticity import HostAuthenticityValidator
-from ..validator.health import HealthValidator
 from ..validator import Validator
 import json
 

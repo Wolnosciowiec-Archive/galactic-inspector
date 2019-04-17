@@ -83,7 +83,7 @@ class Node:
         return self._config['host']
 
     def get_port(self) -> int:
-        return self._config['port']
+        return self._config.get('port', 22)
 
     def get_user(self) -> str:
         return self._config['user']
@@ -92,7 +92,7 @@ class Node:
         return self._config['password']
 
     def get_auth_method(self) -> str:
-        return self._config['auth_method']
+        return self._config.get('auth_method', 'password')
 
     def get_public_key(self) -> str:
         return self._config['public_key']
@@ -104,22 +104,22 @@ class Node:
         return self._expectations[name] if name in self._expectations else ''
 
     def get_checksum_method(self):
-        return self._config['checksum_method']
+        return self._config.get('checksum_method', 'sha256sum')
 
     def get_socks_port(self) -> int:
-        return self._config['socks_port']
+        return self._config.get('socks_port', 9050)
 
     def get_socks_host(self) -> str:
-        return self._config['socks_host']
+        return self._config.get('socks_host', '')
 
     def get_what_to_do_on_security_violation(self):
-        return self._config['on_security_violation']
+        return self._config.get('on_security_violation', '')
 
     def get_health_checks(self) -> list:
         return self._healthchecks
 
     def get_checksum_files(self) -> dict:
-        return self._config['checksum_files']
+        return self._config.get('checksum_files', [])
 
     def get_ssh(self) -> SSH:
         return self._ssh
