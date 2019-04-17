@@ -30,6 +30,8 @@ class TestHostAuthenticityValidator(unittest.TestCase):
         })
 
         results = validator.is_valid(node, force=False)
+
+        node.set_active_security_violation_marking.assert_called_once_with(True)
         self.assertFalse(results.is_ok())
 
     def test_is_valid(self):
@@ -39,6 +41,8 @@ class TestHostAuthenticityValidator(unittest.TestCase):
         })
 
         results = validator.is_valid(node, force=False)
+
+        node.set_active_security_violation_marking.assert_called_once_with(False)
         self.assertTrue(results.is_ok())
 
     @staticmethod
