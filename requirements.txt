@@ -5,3 +5,6 @@ PySocks>=1.6
 pbr>=5.1
 setuptools>=40.4.3
 requests
+unittest-data-provider
+coverage
+mock
