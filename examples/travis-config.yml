@@ -20,6 +20,10 @@ test_vagrant_volume:
     public_key: ""
     passphrase: ""
 
+    # mattermost/slack
+    notifications:
+        type: "none"
+
     # checksum/host authenticity
     checksum_method: "sha256sum"
     on_security_violation: "echo 'Checksum failed... unmounting secure data disk, waiting for administrator intervention...'"
