@@ -1,10 +1,7 @@
 FROM alpine:3.8
 
 RUN mkdir -p /app
-ADD "./sshserveraudit/" /app/sshserveraudit
-ADD "./examples/" /app/examples
-ADD "./.git" /app/.git
-ADD ["./Makefile", "./requirements.txt", "./setup.cfg", "./setup.py", "./AUTHORS", "./ChangeLog", "./README.md", "/app/"]
+ADD "./" /app
 
 RUN apk --update add python3 py3-cffi libssl1.0 make bash sudo git gcc python3-dev musl-dev linux-headers libffi-dev openssl-dev \
     && pip3 install --upgrade pip \
