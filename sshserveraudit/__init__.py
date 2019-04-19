@@ -145,7 +145,7 @@ class SecureCryptMountApplication(tornado.web.Application):
     @staticmethod
     def _load_config_file_into_array(path: str) -> dict:
         pointer = open(path, "r")
-        parsed = yaml.load(pointer)
+        parsed = yaml.load(pointer, Loader=yaml.SafeLoader)
         pointer.close()
 
         if not isinstance(parsed, dict) or len(parsed) == 0:
