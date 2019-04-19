@@ -60,13 +60,14 @@ class Node:
 
     _config = {}
     _expectations = {}
-    _healthchecks = []
-    _healthy = True
+    _health_checks = []
     _ssh = None         # type: SSH
     _notifier = None    # type: Notifier
 
     # state
     _active_security_violation = False
+    _executed_on_current_violation = False
+    _healthy = True
 
     def __init__(self, config: dict, expectations: dict, ssh: SSH):
         self._config = config
@@ -74,7 +75,7 @@ class Node:
         self._ssh = ssh
 
         for check in config['healthchecks']:
-            self._healthchecks.append(
+            self._health_checks.append(
                 Healthcheck(check['command'], check.get('on_failure', None),
                             check.get('on_failure_even_if_security_violation', False))
             )
@@ -115,8 +116,19 @@ class Node:
     def get_what_to_do_on_security_violation(self):
         return self._config.get('on_security_violation', '')
 
+    def set_command_executed_on_current_violation(self, value: bool):
+        self._executed_on_current_violation = value
+
+    def should_take_action_on_security_violation(self) -> bool:
+        """
+        Should we take action eg. execute a command on current security violation?
+        A: Only if it was not already executed (do not execute twice)
+        """
+
+        return not self._executed_on_current_violation and self.has_active_security_violation()
+
     def get_health_checks(self) -> list:
-        return self._healthchecks
+        return self._health_checks
 
     def get_checksum_files(self) -> dict:
         return self._config.get('checksum_files', [])
@@ -143,6 +155,13 @@ class Node:
         self._active_security_violation = is_active
 
     def set_healthy(self, healthy: bool):
+        """
+        Mark the node as healthy or unhealthy
+        Side effect: Notification
+
+        :param healthy:
+        :return:
+        """
 
         if not self._healthy and healthy:
             self.get_notifier().is_healthy_again()

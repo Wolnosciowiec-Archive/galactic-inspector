@@ -22,9 +22,14 @@ class AuthenticityCheckLoopController(AbstractLoopController):
         if not result.is_ok():
             tornado.log.app_log.error('!!! [' + str(node) + '][Authenticity] Security violation found on node')
 
-            if node.get_what_to_do_on_security_violation():
-                tornado.log.app_log.error('!!! [' + str(node) + '][Authenticity] Executing prevention command')
+            if node.get_what_to_do_on_security_violation() and node.should_take_action_on_security_violation():
+
+                # execute a "rescue/notify command", mark as executed
+                node.set_command_executed_on_current_violation(True)
                 node.execute_command(node.get_what_to_do_on_security_violation())
+
+                # log, notify
+                tornado.log.app_log.error('!!! [' + str(node) + '][Authenticity] Executing prevention command')
                 node.get_notifier().authenticity_executed_prevention_command(
                     str(node.get_what_to_do_on_security_violation())
                 )
@@ -32,4 +37,6 @@ class AuthenticityCheckLoopController(AbstractLoopController):
             return False
 
         tornado.log.app_log.info('[' + str(node) + '][Authenticity] Looks OK')
+        node.set_command_executed_on_current_violation(False)
+
         return True
