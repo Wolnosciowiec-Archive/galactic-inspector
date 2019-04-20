@@ -62,11 +62,13 @@ class Notifier:
 
 class SlackNotifier(Notifier):
     url = ""
+    _proxy = ""
 
     def __init__(self, config: dict, node):
         super().__init__(config, node)
         self.url = config['url']
         self._resend_after = int(config.get('resend_after', 600))
+        self._proxy = config.get('proxy', None)
 
     def health_check_failed(self, check_name: str):
         self._send(":exclamation: :exclamation: :exclamation: " +
@@ -92,6 +94,12 @@ class SlackNotifier(Notifier):
     def is_healthy_again(self):
         self._send(":white_check_mark: All health checks are now passing on `" + str(self.node) + "`")
 
+    def _get_proxy(self):
+        if self._proxy:
+            return self._proxy
+
+        return None
+
     def _send(self, msg: str):
         if not self._should_send_notification(msg):
             return
@@ -100,7 +108,8 @@ class SlackNotifier(Notifier):
 
         response = requests.post(
             self.url, data=json.dumps({'text': msg}),
-            headers={'Content-Type': 'application/json'}
+            headers={'Content-Type': 'application/json'},
+            proxies=self._get_proxy()
         )
         if response.status_code != 200:
             raise ValueError(
