@@ -72,8 +72,8 @@ class SlackNotifier(Notifier):
         self._resend_after = int(config.get('resend_after', 600))
         self._proxy = str(config.get('proxy', ''))
         self._proxy_retry_num = int(config.get('proxy_retry_num', 3))
-        self._proxy_fallback_on_failure = config.get('proxy_fallback_on_failure', '')
-        self._timeout = int(config.get('timeout', 300))
+        self._proxy_fallback_on_failure = config.get('proxy_fallback_on_failure', False)
+        self._timeout = int(config.get('connection_timeout', 300))
 
     def health_check_failed(self, check_name: str):
         self._send(":exclamation: :exclamation: :exclamation: " +
@@ -99,7 +99,12 @@ class SlackNotifier(Notifier):
     def is_healthy_again(self):
         self._send(":white_check_mark: All health checks are now passing on `" + str(self.node) + "`")
 
-    def _get_proxy(self):
+    def _get_proxy(self, retry_num: int = 0):
+        # If socks proxy is still failing, then send the notification without the proxy
+        # (if policy defines that fallback on failure is allowed)
+        if self._proxy_fallback_on_failure and self._proxy_retry_num and retry_num >= self._proxy_retry_num:
+            return None
+
         if self._proxy:
             return self._proxy
 
@@ -113,7 +118,7 @@ class SlackNotifier(Notifier):
             response = requests.post(
                 self.url, data=json.dumps({'text': msg}),
                 headers={'Content-Type': 'application/json'},
-                proxies=self._get_proxy(),
+                proxies=self._get_proxy(retry_num),
                 timeout=self._timeout
             )
             if response.status_code != 200:
