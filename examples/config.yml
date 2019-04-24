@@ -1,3 +1,5 @@
+
+# create as much services as you need and name them as you want
 test_vagrant_volume:
 
     # optional SOCKS proxy
@@ -23,25 +25,28 @@ test_vagrant_volume:
 
     # mattermost/slack
     notifications:
-        type: "none"
-        url: "http://some-url-here"
-        resend_after: 300
+        type: "none" # mattermost, slack, none
+        url: "http://some-url-here" # (slack/mattermost only)
+        resend_after: 300 # (slack/mattermost only)
+        connection_timeout: 300 # (slack/mattermost only)
+        #proxy: "socks://some-socks-server:9050" # (slack/mattermost only)
+        proxy_retry_num: 3 # (slack/mattermost only)
+        # when prixy will fail all retries, then should we skip using proxy to send a notification? (slack/mattermost only)
+        proxy_fallback_on_failure: false
 
-    #
-    # notifications:
-    #     type: "mattermost"
-    #     url: "http://some-url-here"
-    #     resend_after: 300
-    #
-
+    # host files integrity checking mechanism
     checksum_method: "sha256sum"
+
+    # a command to execute when checksum failed, can be empty, or can be a some resuce command
     on_security_violation: "echo 'Checksum failed... unmounting secure data disk, waiting for administrator intervention...'"
 
+    # files to keep eye on integrity
     checksum_files:
         sh: '/bin/sh'
         bash: '/bin/bash'
         losetup: '$(whereis losetup|awk "{print \$2}")'
 
+    # checks to perform on the host to validate additionally if everything is ok
     healthchecks:
         - command: "ps aux |grep SOOOMETHING"
           on_failure: "echo 'Something on failure'"
