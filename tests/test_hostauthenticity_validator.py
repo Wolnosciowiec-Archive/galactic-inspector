@@ -16,7 +16,7 @@ if False:
 
 class TestHostAuthenticityValidator(unittest.TestCase):
     def test_validate(self):
-        validator = HostAuthenticityValidator()
+        validator = HostAuthenticityValidator(120)
 
         self.assertEqual(
             {'some-name': 'some-hash-there'},
@@ -24,7 +24,7 @@ class TestHostAuthenticityValidator(unittest.TestCase):
         )
 
     def test_is_valid_invalid(self):
-        validator = HostAuthenticityValidator()
+        validator = HostAuthenticityValidator(120)
         node = self._create_test_node('some-hash-here', {
             'get_expected_checksum.return_value': 'different-hash-expected'
         })
@@ -35,7 +35,7 @@ class TestHostAuthenticityValidator(unittest.TestCase):
         self.assertFalse(results.is_ok())
 
     def test_is_valid(self):
-        validator = HostAuthenticityValidator()
+        validator = HostAuthenticityValidator(120)
         node = self._create_test_node('some-hash-here', {
             'get_expected_checksum.return_value': 'some-hash-here'
         })

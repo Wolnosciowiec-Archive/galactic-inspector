@@ -52,13 +52,13 @@ class SecureCryptMountApplication(tornado.web.Application):
     configured_nodes = {}   # type: {Node}
     _validators = []
 
-    def __init__(self, handlers=None, default_host=None, transforms=None,
+    def __init__(self, max_cache_time: int, handlers=None, default_host=None, transforms=None,
                  **settings):
         super().__init__(handlers=handlers, default_host=default_host, transforms=transforms, settings=settings)
 
         self._validators = {
-            "HostAuthenticity": HostAuthenticityValidator(),
-            "Health": HealthValidator()
+            "HostAuthenticity": HostAuthenticityValidator(max_cache_time=max_cache_time),
+            "Health": HealthValidator(max_cache_time=max_cache_time)
         }
 
     def build_expectations(self, expectation_dirs: list, node_name: str) -> bool:
@@ -168,9 +168,10 @@ def create_application():
     ]
 
     # HTTP application endpoints configuration
-    app = SecureCryptMountApplication([
-        (r"/", ValidationHttpController)
-    ])
+    app = SecureCryptMountApplication(
+        (options.sleep_time - 1)
+        [(r"/", ValidationHttpController)]
+    )
 
     app.parse_configuration(
         options.config,

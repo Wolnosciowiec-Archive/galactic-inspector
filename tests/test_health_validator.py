@@ -29,5 +29,5 @@ class TestHealthValidator(unittest.TestCase):
             'get_health_checks.return_value': []
         })
 
-        validator = HealthValidator()
+        validator = HealthValidator(120)
         validator.is_valid(node, force=True)

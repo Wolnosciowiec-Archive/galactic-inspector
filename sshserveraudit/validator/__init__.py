@@ -11,6 +11,9 @@ class Validator:
     # static
     cache = {}
 
+    def __init__(self, max_cache_time: int):
+        self.max_cache_time = max_cache_time
+
     def _get_cache_ident(self, node: Node):
         return str(node) + '_' + str(type(self).__name__)
 
