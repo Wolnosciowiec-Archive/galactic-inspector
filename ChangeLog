@@ -1,6 +1,33 @@
 CHANGES
 =======
 
+* Fixed: TypeError: 'int' object is not subscriptable
+* Fixed: "Status not ready, waiting for check to be performed..." was showing all the time, because of invalid cache configuration. Now the cache max life time = (loop sleep time - 1)
+* Added initial documentation
+* Slack: Implemented proxy retries and additional parameters adjustable from configuration file
+* WIP: Slack socks proxy support
+* Added initial proxy support for Slack/Mattermost notifications
+* Fixed build
+
+v1.0.1
+------
+
+* Added valid deployment credentials
+
+v1.0
+----
+
+* Attempting to fix docker build
+* Not supporting Python 3.4 anymore
+* Fixed: YAMLLoadWarning: calling yaml.load() without Loader=... is deprecated, as the default Loader is unsafe. Please read https://msg.pyyaml.org/load for full details
+* Command on security violation will be executed only once
+* Covered notifier important part - about sending or not sending notifications
+* Covered SSH service with tests
+* Updated config on CI to include latest changes - support for notifications
+* Covered NodeFactory
+* Increased coverage, added libraries to requirements.txt
+* Covered most of the important logic from Node entity
+* Added healthy notification
 * - Fixed recovery commands execution - Added detailed slack/mattermost notifications
 * Refactored HTTP caching: The HTTP endpoint now does not trigger rebuild, for security reasons
 * Refactored HTTP caching
