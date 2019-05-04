@@ -169,7 +169,7 @@ def create_application():
 
     # HTTP application endpoints configuration
     app = SecureCryptMountApplication(
-        (options.sleep_time - 1)
+        (int(options.sleep_time) - 1)
         [(r"/", ValidationHttpController)]
     )
 
