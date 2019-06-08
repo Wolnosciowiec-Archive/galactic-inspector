@@ -2,6 +2,7 @@
 from ..entity.host import Node
 from ..valueobject.validator import ValidatorResult
 import time
+import datetime
 import tornado.log
 
 
@@ -18,6 +19,8 @@ class Validator:
         return str(node) + '_' + str(type(self).__name__)
 
     def _cache_results(self, result: ValidatorResult, node: Node) -> ValidatorResult:
+        result.inject_last_check_time(datetime.datetime.now().strftime('%d.%m.%Y %H:%M:%S'))
+
         Validator.cache[self._get_cache_ident(node)] = {
             'result': result,
             'created_at': time.time()
@@ -32,23 +35,24 @@ class Validator:
 
         if ident not in Validator.cache:
             tornado.log.app_log.info('Cache not found')
-            return None
+            return None, None
 
         cached = Validator.cache[ident]
 
-        if not cached['result'] or time.time() >= (cached['created_at'] + self.max_cache_time):
+        if not cached['result']:
+            tornado.log.app_log.info('Cache not warmed up yet...')
+            return None, None
+
+        if time.time() >= (cached['created_at'] + self.max_cache_time):
             tornado.log.app_log.info('Cache expired')
 
-            del Validator.cache[ident]
-            return None
-
-        return cached['result']
+        return cached['result'], cached['created_at']
 
     def is_valid(self, node: Node, force=False, only_cache=False) -> ValidatorResult:
-        results = self._get_results_from_cache(node)
+        results, cache_time = self._get_results_from_cache(node)
 
         if only_cache and not results:
-            return ValidatorResult(False, 'Status not ready, waiting for check to be performed...', [])
+            return ValidatorResult(False, 'Status not ready, waiting for check to be initially performed...', [])
 
         if results and not force:
             return results
